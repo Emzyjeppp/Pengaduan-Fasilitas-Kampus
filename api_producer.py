@@ -116,10 +116,12 @@ def cek_antrean():
         }), 200
     except Exception:
         return jsonify({"status_broker": "Offline", "jumlah_antrean": 0}), 500
-
+    
 if __name__ == '__main__':
     print("-------------------------------------------------")
     print(" SISTEM PENGADUAN KAMPUS (API PRODUCER) BERJALAN ")
-    print(" Akses Web di: http://localhost:5000")
+    # Ganti '0.0.0.0' agar bisa diakses oleh IP lain
+    print(" Akses dari HP/Laptop lain via IP Address Anda")
     print("-------------------------------------------------")
-    app.run(debug=True, port=5000)
+    # host='0.0.0.0' artinya membuka pintu untuk semua perangkat di jaringan
+    app.run(debug=True, port=5000, host='0.0.0.0')
