@@ -124,4 +124,4 @@ if __name__ == '__main__':
     print(" Akses dari HP/Laptop lain via IP Address Anda")
     print("-------------------------------------------------")
     # host='0.0.0.0' artinya membuka pintu untuk semua perangkat di jaringan
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, port=5000)
