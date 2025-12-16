@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengaduan Kampus</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        button { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
+        button:hover { background-color: #2980b9; }
+        
+        /* Status Box */
+        #result-box { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; }
+        .pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        
+        /* Queue Monitor */
+        .monitor { margin-top: 30px; padding: 15px; background: #333; color: #0f0; font-family: monospace; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📢 Pengaduan Fasilitas Kampus</h1>
+    
+    <div class="form-group">
+        <label>Nama Mahasiswa</label>
+        <input type="text" id="nama" placeholder="Contoh: Budi Santoso">
+    </div>
+    <div class="form-group">
+        <label>Lokasi Kerusakan</label>
+        <input type="text" id="lokasi" placeholder="Contoh: Gedung B, R.304">
+    </div>
+    <div class="form-group">
+        <label>Deskripsi Kerusakan</label>
+        <textarea id="deskripsi" rows="3" placeholder="Contoh: AC bocor air menetes ke meja"></textarea>
+    </div>
+
+    <button onclick="kirimLaporan()">Kirim Laporan</button>
+
+    <div id="result-box">
+        <h3>Status Laporan: <span id="status-text">-</span></h3>
+        <p>ID Laporan: <b id="laporan-id"></b></p>
+        <p id="pesan-detail"></p>
+    </div>
+
+    <div class="monitor">
+        Status Sistem: <span id="server-status">Connecting...</span><br>
+        Jumlah Antrean di Broker: <span id="queue-count">0</span>
+    </div>
+</div>
+
+<script>
+    let currentLaporanId = null;
+
+    // Fungsi 1: Kirim Data ke API (Producer)
+    async function kirimLaporan() {
+        const nama = document.getElementById('nama').value;
+        const lokasi = document.getElementById('lokasi').value;
+        const deskripsi = document.getElementById('deskripsi').value;
+
+        if(!nama || !deskripsi) { alert("Nama dan Deskripsi wajib diisi!"); return; }
+
+        const payload = {
+            pelapor: { nama: nama },
+            lokasi: lokasi,
+            deskripsi: deskripsi
+        };
+
+        try {
+            const response = await fetch('/api/lapor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+
+            // Tampilkan UI
+            document.getElementById('result-box').style.display = 'block';
+            document.getElementById('result-box').className = 'pending';
+            document.getElementById('laporan-id').innerText = result.id_laporan;
+            document.getElementById('status-text').innerText = "DIKIRIM (Menunggu Worker)";
+            document.getElementById('pesan-detail').innerText = "Data Anda sudah masuk antrean Message Broker.";
+            
+            currentLaporanId = result.id_laporan;
+            
+            // Mulai polling cek status
+            monitorStatus(); 
+
+        } catch (error) {
+            alert("Gagal koneksi ke API");
+        }
+    }
+
+    // Fungsi 2: Polling Status (Cek terus menerus sampai diproses)
+    async function monitorStatus() {
+        if (!currentLaporanId) return;
+
+        const interval = setInterval(async () => {
+            try {
+                const res = await fetch('/api/laporan/' + currentLaporanId);
+                
+                if (res.status === 200) {
+                    const data = await res.json();
+                    // Jika data ditemukan di Database (artinya sudah diproses Worker)
+                    document.getElementById('result-box').className = 'success';
+                    document.getElementById('status-text').innerText = "✅ SELESAI DIPROSES";
+                    document.getElementById('pesan-detail').innerText = "Teknisi telah menerima laporan pada: " + data.waktu_diproses;
+                    
+                    clearInterval(interval); // Stop checking
+                }
+            } catch (e) { console.log("Waiting..."); }
+        }, 2000); // Cek setiap 2 detik
+    }
+
+    // Fungsi 3: Update Monitor Antrean (Untuk gaya-gayaan Demo)
+    setInterval(async () => {
+        try {
+            const res = await fetch('/api/antrean');
+            const data = await res.json();
+            document.getElementById('server-status').innerText = "Online 🟢";
+            document.getElementById('queue-count').innerText = data.jumlah_antrean;
+        } catch (e) {
+            document.getElementById('server-status').innerText = "Offline 🔴";
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
