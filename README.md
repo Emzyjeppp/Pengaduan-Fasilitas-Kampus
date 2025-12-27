@@ -37,3 +37,17 @@ graph LR
     C -- Pop Job --> D[Python Worker]
     D -- Save Data --> E[(Database JSON)]
     D -- Update Status --> E
+
+📂 Struktur Folder
+Sistem-Pengaduan-Kampus/
+├── static/
+│   └── uploads/        # Tempat penyimpanan foto bukti
+├── templates/
+│   ├── index.html      # Halaman Lapor (Mahasiswa)
+│   └── admin.html      # Halaman Dashboard (Teknisi)
+├── api_producer.py     # Main Server (Flask)
+├── worker.py           # Background Process
+├── database_laporan.json
+├── requirements.txt
+└── README.md
+
