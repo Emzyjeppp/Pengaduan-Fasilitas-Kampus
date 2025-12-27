@@ -1,26 +1,44 @@
 [
     {
-        "id": "7ccbee29",
-        "waktu_lapor": "2025-12-16 15:20:58",
+        "id": "032d1913",
+        "waktu_lapor": "2025-12-27 16:29:19",
         "pelapor": {
             "nama": "Muhammad Jepri"
         },
         "lokasi": "T.31",
-        "kerusakan": "Umum",
-        "deskripsi": "BOCOR",
-        "status": "DIPROSES_TEKNISI",
-        "waktu_diproses": "Tue Dec 16 15:21:03 2025"
+        "prioritas": "Biasa",
+        "foto": "86e66c28_c7dc61e0-14af-4ce0-8c50-4a6ba90b3baf.jpg",
+        "deskripsi": "RUsak jir",
+        "status": "SELESAI",
+        "waktu_diproses": "Sat Dec 27 16:29:24 2025",
+        "waktu_update": "2025-12-27 16:29:33"
     },
     {
-        "id": "f9d3d0c2",
-        "waktu_lapor": "2025-12-16 16:57:16",
+        "id": "29c3cadd",
+        "waktu_lapor": "2025-12-27 16:45:05",
+        "pelapor": {
+            "nama": "Muhammad Jepri"
+        },
+        "lokasi": "Test",
+        "prioritas": "Darurat",
+        "foto": "905a0348_tritone-image.png",
+        "deskripsi": "Gatau",
+        "status": "SELESAI",
+        "waktu_diproses": "Sat Dec 27 16:45:10 2025",
+        "waktu_update": "2025-12-27 16:45:24"
+    },
+    {
+        "id": "61391aca",
+        "waktu_lapor": "2025-12-27 16:56:55",
         "pelapor": {
             "nama": "Muhammad Jepri"
         },
         "lokasi": "T.31",
-        "kerusakan": "Umum",
-        "deskripsi": "AC Bocor",
-        "status": "DIPROSES_TEKNISI",
-        "waktu_diproses": "Tue Dec 16 16:57:55 2025"
+        "prioritas": "Sedang",
+        "foto": "ccb7682a_DIA2.png",
+        "deskripsi": "Buset dah panas bgt",
+        "status": "SELESAI",
+        "waktu_diproses": "Sat Dec 27 16:57:00 2025",
+        "waktu_update": "2025-12-27 16:57:05"
     }
 ]

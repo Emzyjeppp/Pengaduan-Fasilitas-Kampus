@@ -3,133 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Pengaduan Kampus</title>
+    <title>Lapor Kerusakan</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f9; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
-        button:hover { background-color: #2980b9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f4f9; color: #333; max-width: 600px; margin: 20px auto; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        /* Status Box */
-        #result-box { margin-top: 20px; padding: 15px; border-radius: 5px; display: none; }
-        .pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        h2 { text-align: center; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 15px; }
         
-        /* Queue Monitor */
-        .monitor { margin-top: 30px; padding: 15px; background: #333; color: #0f0; font-family: monospace; border-radius: 5px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        
+        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #2980b9; }
+        
+        /* Status Result Box */
+        #result-box { margin-top: 20px; padding: 15px; display: none; border-radius: 5px; text-align: center; }
+        .pending { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; } 
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+
+        /* Monitor Sistem */
+        .monitor { margin-top: 30px; padding: 15px; background: #222; color: #0f0; font-family: monospace; border-radius: 5px; font-size: 13px; }
+        .dot { height: 10px; width: 10px; background-color: #bbb; border-radius: 50%; display: inline-block; }
+        .online { background-color: #2ecc71; box-shadow: 0 0 5px #2ecc71; }
+        .offline { background-color: #e74c3c; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <h1>📢 Pengaduan Fasilitas Kampus</h1>
+    <h2>🔧 Lapor Kerusakan Fasilitas</h2>
     
-    <div class="form-group">
-        <label>Nama Mahasiswa</label>
-        <input type="text" id="nama" placeholder="Contoh: Budi Santoso">
-    </div>
-    <div class="form-group">
-        <label>Lokasi Kerusakan</label>
-        <input type="text" id="lokasi" placeholder="Contoh: Gedung B, R.304">
-    </div>
-    <div class="form-group">
-        <label>Deskripsi Kerusakan</label>
-        <textarea id="deskripsi" rows="3" placeholder="Contoh: AC bocor air menetes ke meja"></textarea>
-    </div>
+    <label>Nama Anda:</label>
+    <input type="text" id="nama" placeholder="Nama Lengkap">
+
+    <label>Lokasi Kerusakan:</label>
+    <input type="text" id="lokasi" placeholder="Contoh: Lab Komputer 2">
+
+    <label>Tingkat Prioritas (Urgensi):</label>
+    <select id="prioritas">
+        <option value="Biasa">🟢 Biasa (Tidak Mendesak)</option>
+        <option value="Sedang">🟡 Sedang (Mengganggu)</option>
+        <option value="Darurat">🔴 Darurat (Bahaya/Fatal)</option>
+    </select>
+
+    <label>Foto Bukti (Opsional):</label>
+    <input type="file" id="foto" accept="image/*">
+
+    <label>Deskripsi Masalah:</label>
+    <textarea id="deskripsi" rows="3" placeholder="Jelaskan detail kerusakannya..."></textarea>
 
     <button onclick="kirimLaporan()">Kirim Laporan</button>
 
     <div id="result-box">
-        <h3>Status Laporan: <span id="status-text">-</span></h3>
-        <p>ID Laporan: <b id="laporan-id"></b></p>
-        <p id="pesan-detail"></p>
+        <h3 id="status-title">Status Laporan Terakhir</h3>
+        <p>ID: <b id="laporan-id"></b> | <span id="status-text">Menunggu...</span></p>
     </div>
 
     <div class="monitor">
-        Status Sistem: <span id="server-status">Connecting...</span><br>
+        Status Sistem: <span id="server-status">Connecting...</span> <span class="dot" id="status-dot"></span><br>
         Jumlah Antrean di Broker: <span id="queue-count">0</span>
     </div>
 </div>
 
 <script>
-    let currentLaporanId = null;
-
-    // Fungsi 1: Kirim Data ke API (Producer)
+    // 1. KIRIM LAPORAN (Auto Clear)
     async function kirimLaporan() {
-        const nama = document.getElementById('nama').value;
-        const lokasi = document.getElementById('lokasi').value;
-        const deskripsi = document.getElementById('deskripsi').value;
+        const namaInput = document.getElementById('nama');
+        const lokasiInput = document.getElementById('lokasi');
+        const prioritasInput = document.getElementById('prioritas');
+        const deskripsiInput = document.getElementById('deskripsi');
+        const fileInput = document.getElementById('foto');
 
-        if(!nama || !deskripsi) { alert("Nama dan Deskripsi wajib diisi!"); return; }
+        // Validasi
+        if(!namaInput.value || !lokasiInput.value || !deskripsiInput.value) { 
+            alert("Isi semua data!"); return; 
+        }
 
-        const payload = {
-            pelapor: { nama: nama },
-            lokasi: lokasi,
-            deskripsi: deskripsi
-        };
+        const formData = new FormData();
+        formData.append('nama', namaInput.value);
+        formData.append('lokasi', lokasiInput.value);
+        formData.append('prioritas', prioritasInput.value);
+        formData.append('deskripsi', deskripsiInput.value);
+        if (fileInput.files[0]) {
+            formData.append('foto', fileInput.files[0]);
+        }
 
         try {
-            const response = await fetch('/api/lapor', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const result = await response.json();
+            const res = await fetch('/api/lapor', { method: 'POST', body: formData });
+            const data = await res.json();
+            
+            // --- BAGIAN INI YANG MENGOSONGKAN FORM (AUTO CLEAR) ---
+            namaInput.value = '';
+            lokasiInput.value = '';
+            deskripsiInput.value = '';
+            fileInput.value = ''; // Reset input file
+            prioritasInput.value = 'Biasa'; // Reset ke default
+            // -----------------------------------------------------
 
-            // Tampilkan UI
+            // Tampilkan Status di Bawah
             document.getElementById('result-box').style.display = 'block';
             document.getElementById('result-box').className = 'pending';
-            document.getElementById('laporan-id').innerText = result.id_laporan;
-            document.getElementById('status-text').innerText = "DIKIRIM (Menunggu Worker)";
-            document.getElementById('pesan-detail').innerText = "Data Anda sudah masuk antrean Message Broker.";
+            document.getElementById('laporan-id').innerText = data.id_laporan;
+            document.getElementById('status-text').innerText = "⏳ DIKIRIM (Menunggu Worker...)";
             
-            currentLaporanId = result.id_laporan;
-            
-            // Mulai polling cek status
-            monitorStatus(); 
+            // Mulai Polling untuk ID terbaru ini
+            monitorStatusLaporan(data.id_laporan);
 
-        } catch (error) {
-            alert("Gagal koneksi ke API");
-        }
+        } catch (e) { alert("Gagal kirim. Server mati?"); }
     }
 
-    // Fungsi 2: Polling Status (Cek terus menerus sampai diproses)
-    async function monitorStatus() {
-        if (!currentLaporanId) return;
+    // 2. MONITOR STATUS LAPORAN (Polling)
+    let pollingInterval = null;
 
-        const interval = setInterval(async () => {
+    async function monitorStatusLaporan(id) {
+        // Hentikan polling lama jika ada (supaya tidak bentrok dengan laporan sebelumnya)
+        if (pollingInterval) clearInterval(pollingInterval);
+
+        pollingInterval = setInterval(async () => {
             try {
-                const res = await fetch('/api/laporan/' + currentLaporanId);
-                
+                const res = await fetch('/api/lapor/' + id);
                 if (res.status === 200) {
                     const data = await res.json();
-                    // Jika data ditemukan di Database (artinya sudah diproses Worker)
-                    document.getElementById('result-box').className = 'success';
-                    document.getElementById('status-text').innerText = "✅ SELESAI DIPROSES";
-                    document.getElementById('pesan-detail').innerText = "Teknisi telah menerima laporan pada: " + data.waktu_diproses;
                     
-                    clearInterval(interval); // Stop checking
+                    // Update Teks Status
+                    if (data.status === 'SELESAI') {
+                        document.getElementById('result-box').className = 'success';
+                        document.getElementById('status-text').innerText = "✅ SELESAI DIPERBAIKI";
+                        // Opsional: Stop polling kalau sudah selesai agar hemat resource
+                        // clearInterval(pollingInterval); 
+                    } else if (data.status === 'DIPROSES_TEKNISI') {
+                        document.getElementById('status-text').innerText = "⚙️ SEDANG DIPERBAIKI TEKNISI";
+                    }
                 }
-            } catch (e) { console.log("Waiting..."); }
-        }, 2000); // Cek setiap 2 detik
+            } catch(e){}
+        }, 2000);
     }
 
-    // Fungsi 3: Update Monitor Antrean (Untuk gaya-gayaan Demo)
+    // 3. MONITOR SISTEM GLOBAL
     setInterval(async () => {
         try {
             const res = await fetch('/api/antrean');
             const data = await res.json();
-            document.getElementById('server-status').innerText = "Online 🟢";
+            document.getElementById('server-status').innerText = "Online";
+            document.getElementById('status-dot').className = "dot online";
             document.getElementById('queue-count').innerText = data.jumlah_antrean;
         } catch (e) {
-            document.getElementById('server-status').innerText = "Offline 🔴";
+            document.getElementById('server-status').innerText = "Offline";
+            document.getElementById('status-dot').className = "dot offline";
+            document.getElementById('queue-count').innerText = "-";
         }
     }, 1000);
 </script>
-
 </body>
 </html>

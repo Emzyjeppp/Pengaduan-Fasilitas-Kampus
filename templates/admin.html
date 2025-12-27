@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Teknisi</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background: #f4f7f6; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        
+        /* Header & Controls */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h2 { margin: 0; color: #2c3e50; }
+        
+        .controls { display: flex; gap: 10px; }
+        select { padding: 8px; border-radius: 5px; border: 1px solid #ddd; }
+        button { padding: 8px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #34495e; color: white; }
+        tr:hover { background-color: #f9f9f9; }
+        
+        /* Badge Prioritas */
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; color: white; font-weight: bold; text-transform: uppercase; }
+        .bg-darurat { background: #e74c3c; box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3); }
+        .bg-sedang { background: #f1c40f; color: #444; }
+        .bg-biasa { background: #2ecc71; }
+
+        /* Tombol Aksi */
+        .btn-foto { background: #95a5a6; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 11px; }
+        .btn-selesai { background: #27ae60; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 12px; }
+        .status-selesai { color: #27ae60; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h2>🛠️ Dashboard Teknisi</h2>
+        <div class="controls">
+            <select id="filter-prioritas" onchange="filterData()">
+                <option value="Semua">📂 Semua Prioritas</option>
+                <option value="Darurat">🔴 Hanya Darurat</option>
+                <option value="Sedang">🟡 Hanya Sedang</option>
+                <option value="Biasa">🟢 Hanya Biasa</option>
+            </select>
+            
+            <button onclick="loadData()">🔄 Refresh Data</button>
+        </div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Waktu</th>
+                <th>Lokasi</th>
+                <th>Pelapor</th>
+                <th>Prioritas</th>
+                <th>Masalah</th>
+                <th>Bukti</th>
+                <th>Status</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tabel-data">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    let globalData = []; // Simpan data di memori agar filter cepat
+
+    async function loadData() {
+        try {
+            const res = await fetch('/api/semua_laporan');
+            globalData = await res.json();
+            
+            // LOGIKA SORTING: Darurat paling atas
+            const urutan = { 'Darurat': 1, 'Sedang': 2, 'Biasa': 3 };
+            globalData.sort((a, b) => {
+                // Jika status SELESAI, taruh paling bawah
+                if (a.status === 'SELESAI' && b.status !== 'SELESAI') return 1;
+                if (a.status !== 'SELESAI' && b.status === 'SELESAI') return -1;
+                
+                // Sort berdasarkan prioritas
+                let pA = urutan[a.prioritas] || 99;
+                let pB = urutan[b.prioritas] || 99;
+                return pA - pB;
+            });
+
+            filterData(); // Panggil fungsi render
+        } catch (e) {
+            console.error("Gagal ambil data");
+        }
+    }
+
+    function filterData() {
+        const filterValue = document.getElementById('filter-prioritas').value;
+        const tbody = document.getElementById('tabel-data');
+        tbody.innerHTML = '';
+
+        globalData.forEach(item => {
+            // LOGIKA FILTER
+            if (filterValue !== "Semua" && item.prioritas !== filterValue) {
+                return; // Skip jika tidak sesuai filter
+            }
+
+            // Tentukan Badge Warna
+            let badgeClass = 'bg-biasa';
+            if(item.prioritas === 'Darurat') badgeClass = 'bg-darurat';
+            if(item.prioritas === 'Sedang') badgeClass = 'bg-sedang';
+
+            // Tombol Foto
+            let tombolFoto = item.foto ? 
+                `<a href="/static/uploads/${item.foto}" target="_blank" class="btn-foto">📷 Foto</a>` : '-';
+
+            // Tombol Aksi
+            let aksi = item.status === 'SELESAI' ? '<span class="status-selesai">✅ Tuntas</span>' : 
+                       `<button class="btn-selesai" onclick="updateStatus('${item.id}')">Selesai</button>`;
+
+            const row = `<tr>
+                <td>${item.waktu_lapor.split(' ')[1]}</td> <td><b>${item.lokasi || '-'}</b></td>
+                <td>${item.pelapor.nama}</td>
+                <td><span class="badge ${badgeClass}">${item.prioritas}</span></td>
+                <td>${item.deskripsi}</td>
+                <td>${tombolFoto}</td>
+                <td>${item.status}</td>
+                <td>${aksi}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    async function updateStatus(id) {
+        if(confirm('Yakin kerusakan ini sudah diperbaiki?')) {
+            await fetch(`/api/lapor/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({status: 'SELESAI'})
+            });
+            loadData(); // Reload setelah update
+        }
+    }
+
+    // Load data pertama kali buka
+    loadData();
+</script>
+
+</body>
+</html>

@@ -6,7 +6,7 @@ import os
 # Konfigurasi Koneksi Redis (Harus sama dengan Producer)
 broker = redis.Redis(host='localhost', port=6379, db=0)
 QUEUE_NAME = 'antrean_laporan'
-DATABASE_FILE = 'database_laporan.json'
+DATABASE_FILE = r'C:\Pelaporan Kampus\database_laporan.json'
 
 def simpan_ke_file(data):
     """Fungsi untuk menyimpan data ke file JSON (Simulasi Database)"""
