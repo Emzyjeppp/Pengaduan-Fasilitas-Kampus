@@ -38,6 +38,7 @@ graph LR
     D -- Save Data --> E[(Database JSON)]
     D -- Update Status --> E
 ```
+```
 📂 Struktur Folder
 Sistem-Pengaduan-Kampus/
 ├── static/
