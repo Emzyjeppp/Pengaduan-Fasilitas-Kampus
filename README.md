@@ -37,7 +37,7 @@ graph LR
     C -- Pop Job --> D[Python Worker]
     D -- Save Data --> E[(Database JSON)]
     D -- Update Status --> E
-
+```
 📂 Struktur Folder
 Sistem-Pengaduan-Kampus/
 ├── static/
