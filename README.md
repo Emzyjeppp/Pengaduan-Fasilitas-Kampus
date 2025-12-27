@@ -38,16 +38,41 @@ graph LR
     D -- Save Data --> E[(Database JSON)]
     D -- Update Status --> E
 ```
-📂 Struktur Folder
-Sistem-Pengaduan-Kampus/
-├── static/
-│   └── uploads/        # Tempat penyimpanan foto bukti
-├── templates/
-│   ├── index.html      # Halaman Lapor (Mahasiswa)
-│   └── admin.html      # Halaman Dashboard (Teknisi)
-├── api_producer.py     # Main Server (Flask)
-├── worker.py           # Background Process
-├── database_laporan.json
-├── requirements.txt
-└── README.md
 
+🚀 Cara Menjalankan (Installation)
+Prasyarat
+Python 3.x terinstall.
+
+Redis Server terinstall dan berjalan (Port 6379).
+
+Langkah 1: Clone & Install
+
+git clone [https://github.com/Emzyjeppp/Sistem-Pengaduan-Kampus.git](https://github.com/Emzyjeppp/Sistem-Pengaduan-Kampus.git)
+cd Sistem-Pengaduan-Kampus
+pip install flask redis
+
+Langkah 2: Jalankan Komponen
+Buka 2 Terminal berbeda untuk menjalankan sistem ini:
+
+Terminal 1 (Jalankan API Server):
+python api_producer.py
+# Server akan berjalan di http://localhost:5000
+
+Terminal 2 (Jalankan Worker):
+python worker.py
+# Worker akan standby menunggu pesan masuk...
+
+📖 Panduan Penggunaan
+1. Mahasiswa (Pelapor)
+Buka browser ke http://localhost:5000.
+Isi Nama, Lokasi, dan Deskripsi.
+Pilih tingkat Prioritas (Darurat/Sedang/Biasa).
+(Opsional) Upload Foto Bukti.
+Klik Kirim Laporan. Status akan muncul di bawah form.
+
+2. Teknisi (Admin)
+Buka browser ke http://localhost:5000/admin.
+Lihat daftar laporan masuk. Gunakan Filter Prioritas untuk melihat yang 'Darurat' saja.
+Klik Lihat Foto untuk memverifikasi kerusakan.
+Klik tombol Selesai jika perbaikan sudah tuntas.
+Sistem akan otomatis mengirim notifikasi ke browser mahasiswa.
