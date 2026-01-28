@@ -76,3 +76,6 @@ Lihat daftar laporan masuk. Gunakan Filter Prioritas untuk melihat yang 'Darurat
 Klik Lihat Foto untuk memverifikasi kerusakan.
 Klik tombol Selesai jika perbaikan sudah tuntas.
 Sistem akan otomatis mengirim notifikasi ke browser mahasiswa.
+
+### 📖 Dokumentasi Penggunaan
+Unduh panduan lengkap cara penggunaan sistem di sini: 👉 [Panduan Penggunaan (Google Drive)](https://drive.google.com/file/d/1NouUQ7-AAW_Y50azdUZX5WQAtbKb8woq/view?usp=drive_link))
