@@ -79,3 +79,26 @@ Sistem akan otomatis mengirim notifikasi ke browser mahasiswa.
 
 ### 📖 Dokumentasi Penggunaan
 Unduh panduan lengkap cara penggunaan sistem di sini: 👉 [Panduan Penggunaan (Google Drive)](https://drive.google.com/file/d/1NouUQ7-AAW_Y50azdUZX5WQAtbKb8woq/view?usp=drive_link))
+
+---
+
+## 🤝 Kontributor
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Emzyjeppp">
+        <img src="https://github.com/Emzyjeppp.png" width="100px;" alt="Emzyjeppp"/>
+        <br />
+        <sub><b>Emzyjeppp ( Muhammad Jepri ) </b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/finkyyy">
+        <img src="https://github.com/finkyyy.png" width="100px;" alt="finkyyy"/>
+        <br />
+        <sub><b>finkyyy ( Fidelia Ping ) </b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
