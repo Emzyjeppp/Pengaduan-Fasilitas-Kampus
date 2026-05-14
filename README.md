@@ -90,23 +90,22 @@ Unduh panduan lengkap cara penggunaan sistem di sini: 👉 [Panduan Penggunaan (
       <a href="https://github.com/Emzyjeppp">
         <img src="https://github.com/Emzyjeppp.png" width="100px;" alt="Emzyjeppp"/>
         <br />
-        <sub><b>Emzyjeppp ( Muhammad Jepri ) </b></sub>
+        <sub><b>Emzyjeppp ( Muhammad Jepri )</b></sub>
       </a>
     </td>
     <td align="center">
       <a href="https://github.com/finkyyy">
         <img src="https://github.com/finkyyy.png" width="100px;" alt="finkyyy"/>
         <br />
-        <sub><b>finkyyy ( Fidelia Ping ) </b></sub>
+        <sub><b>finkyyy ( Fidelia Ping )</b></sub>
       </a>
     </td>
-  </tr>
-      <tr>
     <td align="center">
       <a href="https://github.com/nyndaa">
         <img src="https://github.com/nyndaa.png" width="100px;" alt="nyndaa"/>
         <br />
-        <sub><b>nyndaa ( Raharjian Sustanadia Wijayanti ) </b></sub>
+        <sub><b>nyndaa ( Raharjian Sustanadia Wijayanti )</b></sub>
       </a>
     </td>
+  </tr>
 </table>
