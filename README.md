@@ -101,4 +101,12 @@ Unduh panduan lengkap cara penggunaan sistem di sini: 👉 [Panduan Penggunaan (
       </a>
     </td>
   </tr>
+      <tr>
+    <td align="center">
+      <a href="https://github.com/nyndaa">
+        <img src="https://github.com/nyndaa.png" width="100px;" alt="nyndaa"/>
+        <br />
+        <sub><b>nyndaa ( Raharjian Sustanadia Wijayanti ) </b></sub>
+      </a>
+    </td>
 </table>
