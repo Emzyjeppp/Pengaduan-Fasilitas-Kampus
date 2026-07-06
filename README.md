@@ -107,5 +107,12 @@ Unduh panduan lengkap cara penggunaan sistem di sini: 👉 [Panduan Penggunaan (
         <sub><b>nyndaa ( Raharjian Sustanadia Wijayanti )</b></sub>
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/dewiirahmawatii">
+        <img src="https://github.com/dewiirahmawatii.png" width="100px;" alt="dewiirahmawatii"/>
+        <br />
+        <sub><b>dewiirahmawatii ( Dewi Rahmawati )</b></sub>
+      </a>
+    </td>
   </tr>
 </table>
